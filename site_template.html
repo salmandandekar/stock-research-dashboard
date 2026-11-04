@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stock Research Dashboard</title>
+<style>
+:root{color-scheme:dark;--bg:#09111f;--panel:#111f31;--line:#2c4057;--ink:#edf4fd;--muted:#a2b5ce;--green:#75e4b9;--amber:#ffca7a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top left,#143054,var(--bg) 60%);color:var(--ink);font:15px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1160px;margin:auto;padding:45px 20px 70px}header small{color:var(--green);letter-spacing:.15em;font-weight:bold;text-transform:uppercase}h1{font-size:clamp(2rem,5vw,3.4rem);letter-spacing:-.04em;line-height:1.1;margin:12px 0}p{color:var(--muted);max-width:850px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:30px 0}.stat,.panel,.notes{border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.stat{padding:18px}.stat strong{font-size:29px;display:block}.stat span{color:var(--muted);font-size:12px}
+.panel{overflow:hidden}.bar{padding:18px;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}.bar h2{margin:0;font-size:20px}
+input{background:#0b1726;color:var(--ink);border:1px solid var(--line);padding:10px 13px;border-radius:8px;font:inherit}input:focus{outline:2px solid #83b8ff}
+.overflow{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:780px}th,td{padding:16px;text-align:left;vertical-align:top;border-top:1px solid var(--line)}th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.symbol{font-weight:bold;font-size:18px;color:#a4c7ff;text-decoration:none}.date,.minor{color:var(--muted);font-size:12px}.score{font-weight:700;font-size:18px}.pill{display:inline-block;padding:5px 9px;border-radius:30px;color:var(--green);background:#163b37;font-size:12px;font-weight:bold}.pill.monitor{color:var(--amber);background:#44351e}.pill.weak,.pill.stale{color:#ffb2b2;background:#492a31}
+.note{font-size:12px;color:var(--muted)}.notes{margin-top:24px;padding:20px}.notes strong{color:var(--ink)}footer{margin-top:24px;color:var(--muted);font-size:12px}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}main{padding:30px 14px}}
+</style></head><body><main>
+<header><small>Daily research · US equities</small><h1>Stock research dashboard</h1>
+<p>Automated, explainable technical screening. Rankings identify securities for further research, not orders to buy or sell.</p></header>
+<section class="stats" aria-label="Analysis summary">
+<div class="stat"><strong>{{ rows|length }}</strong><span>Analyzed</span></div>
+<div class="stat"><strong>{{ candidate_count }}</strong><span>Research candidates</span></div>
+<div class="stat"><strong>{{ monitor_count }}</strong><span>Monitor</span></div>
+<div class="stat"><strong>{{ stale_count }}</strong><span>Stale warnings</span></div></section>
+<section class="panel"><div class="bar"><h2>Ranked watchlist</h2><input id="search" aria-label="Filter stock results" placeholder="Filter tickers"></div>
+<div class="overflow"><table><thead><tr><th>Symbol</th><th>Score</th><th>Technical setup</th><th>Volatility</th><th>Evidence</th></tr></thead>
+<tbody id="results">{% for row in rows %}
+<tr data-search="{{ row.symbol }} {{ row.signal }}">
+<td><a class="symbol" href="https://finance.yahoo.com/quote/{{ row.symbol | urlencode }}/" target="_blank" rel="noopener noreferrer">{{ row.symbol }}</a><div class="date">Data through {{ row.asof }}</div></td>
+<td class="score">{{ '—' if row.stale else row.score ~ '/100' }}</td>
+<td>{% if row.stale %}<span class="pill stale">Stale data</span>{% elif row.score >= 70 %}<span class="pill">{{ row.signal }}</span>{% elif row.score >= 40 %}<span class="pill monitor">{{ row.signal }}</span>{% else %}<span class="pill weak">{{ row.signal }}</span>{% endif %}</td>
+<td class="minor">{{ row.risk }}</td>
+<td class="note"><strong>Strength:</strong> {{ row.strengths[0] if row.strengths else "No technical rule passed" }}<br><strong>Concern:</strong> {{ row.concerns[0] if row.concerns else "Valuation not assessed" }}<details><summary>All scoring rules</summary>{% for rule in row.rules %}<div>{{ '✓' if rule.passed else '×' }} {{ rule.name }} ({{ rule.points }} pts)</div>{% endfor %}</details></td>
+</tr>{% endfor %}</tbody></table></div></section>
+{% if errors %}<p role="status">Unavailable: {{ errors | join('; ') }}</p>{% endif %}
+<section class="notes"><strong>Method:</strong> Price above 200-day average (30), 50-day above 200-day average (20), positive 3-month momentum (20), positive 6-month momentum (20), annualized 63-day volatility below 40% (10). Candidate ≥70, monitor 40–69, weak setup below 40. These are unvalidated heuristic scores. <strong>Scores do not assess intrinsic value</strong>, fundamentals, tax situation, diversification, or future returns. Data may be delayed. Suppressed scores indicate stale market history.<br><br><strong>Publication:</strong> No raw prices or price histories are published. Data licensing must be confirmed for any public redistribution of derived research. Research only; not personalized financial advice.</section>
+<footer>Generated {{ generated_at }} · Free static research prototype · No trading integration</footer>
+</main><script>
+document.getElementById('search').addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();document.querySelectorAll('#results tr').forEach(r=>r.hidden=!r.dataset.search.toLowerCase().includes(q))});
+</script></body></html>
