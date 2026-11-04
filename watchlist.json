@@ -1,0 +1,12 @@
+{
+  "tickers": [
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "GOOGL",
+    "AMZN"
+  ],
+  "publication": {
+    "show_quotes": false
+  }
+}
