@@ -120,12 +120,12 @@ def analyze_history(symbol: str, frame: pd.DataFrame,
             frame["Close"].tolist(), frame["Volume"].tolist(), asof,
             split_in_recent_window=recent_splits)
         result["scenario"] = scenario
-        result["plan_status"] = (
-            "STALE" if result["stale"] else scenario.status
-        )
+        reference_date = today or datetime.now(timezone.utc).date()
+        age_days = (reference_date - pd.Timestamp(frame.index[-1]).date()).days
+        source_stale = age_days < 0 or age_days > 5
+        result["plan_status"] = "STALE" if source_stale else scenario.status
         result["plan_reason"] = (
-            "Stale or insufficient completed price history" if result["stale"]
-            else scenario.reason
+            "Completed price history is stale" if source_stale else scenario.reason
         )
     except (ScenarioError, ValueError) as exc:
         result["plan_status"] = "INSUFFICIENT_EVIDENCE"
