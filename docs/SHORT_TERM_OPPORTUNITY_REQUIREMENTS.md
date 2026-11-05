@@ -309,3 +309,13 @@ Additional normative requirements **ST-SM-01 through ST-SM-16** and acceptance t
 - **ST-SM-11 / 14 / 15:** The product must demonstrate research value independent of alpha, identify universe coverage, and maintain strict research/advisory/execution boundaries.
 
 **Release precedence:** design gate D0 passed on paper; D1–D4 remain unverified. Requirements cannot be labeled implemented by their inclusion in this PR. No automated trade placement, leverage or "Buy now" outputs are authorized.
+
+## 14. Financial calculation dependency — short-term trading v1.3
+
+Normative: [quant/01_MARKET_MATH.md](quant/01_MARKET_MATH.md), [quant/04_EXECUTION_COSTS.md](quant/04_EXECUTION_COSTS.md), [quant/05_PORTFOLIO_RISK.md](quant/05_PORTFOLIO_RISK.md), [quant/06_STATISTICAL_VALIDATION.md](quant/06_STATISTICAL_VALIDATION.md), and [quant/07_RED_TEAM_STEELMAN.md](quant/07_RED_TEAM_STEELMAN.md).
+
+- **ST-QF-01:** Discovery identifies possible movement. Research qualification requires evidence-backed net after-cost expectancy, fill policy, uncertainty and tail risk.
+- **ST-QF-02:** Volatility, price movement, individual realized PnL, total strategy return and risk-adjusted performance are independent metrics.
+- **ST-QF-03:** Missing bid/ask, partial fills, delayed/stale quotes, same-candle ambiguity, stop gaps, poor liquidity and unlicensed data cause abstention, exploratory status or publication rejection.
+- **ST-QF-04:** Backtest requires capital-constrained NAV, point-in-time available inputs, realistic execution cost, immutable experiment record and independent holdout.
+- **ST-QF-05:** The 40 example golden vectors in tests/specs are *partial, unexecuted* requirements; implement a separate test for every formula and all 50 red-team scenarios before promotion. No guaranteed profitability or automatic trade placement.
