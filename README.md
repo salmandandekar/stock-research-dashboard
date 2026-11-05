@@ -4,7 +4,7 @@ Free, scheduled, research-only technical stock screening: Python + GitHub Action
 
 ## What it does
 
-- Monitors the tickers in watchlist.json (initially AAPL, MSFT, NVDA, GOOGL, AMZN).
+- Monitors 13 tickers: AAPL, MSFT, NVDA, GOOGL, AMZN, LUNR, MNSO, GRRR, URG, LTRX, LCID, NOK, FLNA.
 - Fetches approximately 18 months of adjusted daily closes using yfinance for personal prototyping.
 - Scores 5 deterministic technical indicators for an explainable 0-100 research rank.
 - Suppresses stale scores, records unavailable symbols, and aborts deployment if fewer than 60% are fresh.
@@ -59,3 +59,25 @@ Open https://chatgpt.com/codex, choose this repository as the Codex environment,
 - https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows
 - https://ranaroussi.github.io/yfinance/
 - https://www.sec.gov/search-filings/edgar-application-programming-interfaces
+
+
+## Conditional buy/sell research planning — 13 tickers
+
+The public report has a Swing Scenario section. It displays each stock's eligibility or exclusion status, and an entirely browser-local calculator for the user's own broker-provided last close, last 20 completed session high, Wilder ATR(14), and dollar turnover. These inputs are not transmitted or stored.
+
+To generate a private CSV of automatically computed exact USD price levels on your own computer, run:
+
+    python -m pip install -r requirements.txt
+    python private_trade_report.py
+
+The program uses the same unofficial personal-use yfinance adapter and writes private_reports/swing_research_*.csv. The directory is ignored by Git and not deployed. Keep this CSV private and verify provider rights.
+
+Research-only formulas: conditional breakout entry is the smallest cent strictly above the last 20 completed-session highs; stop scenario = entry - 1.5 x ATR14; target 1 = entry + 2R; target 2 = entry + 3R, where R = entry - stop. Skip the entry if the opening price exceeds entry + 0.5 x ATR14. Recompute after each completed bar. Research horizon is 1–5 subsequent exchange trading sessions.
+
+Unvalidated example gates: close >= USD 5; 20-session dollar volume proxy >= USD 2 million per day; entry-to-stop risk <=15%; valid 21+ raw, split-consistent OHLCV bars; no split in recent 21 bars.
+
+Urgent caveat: These scenarios are NOT live buy/sell recommendations. They are not based on proven positive expected after-cost returns. Stop fills, 2R/3R targets, next-session price, spreads, trading halts, slippage and earnings gaps cannot be guaranteed.
+
+FLNA (Filana Therapeutics) is the successor ticker to SAVA and has Nasdaq bid-price compliance risk. URG and FLNA remain on the watchlist while below the USD 5 research eligibility floor.
+
+Yahoo's official market-data policy prohibits redistribution of its data. Until we have approved public display rights, exact provider-derived dollar levels remain private rather than posted on public GitHub Pages. For details see docs/SWING_SCENARIO_IMPLEMENTATION.md.
