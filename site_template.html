@@ -14,6 +14,13 @@ input{background:#0b1726;color:var(--ink);border:1px solid var(--line);padding:1
 .symbol{font-weight:bold;font-size:18px;color:#a4c7ff;text-decoration:none}.date,.minor{color:var(--muted);font-size:12px}.score{font-weight:700;font-size:18px}.pill{display:inline-block;padding:5px 9px;border-radius:30px;color:var(--green);background:#163b37;font-size:12px;font-weight:bold}.pill.monitor{color:var(--amber);background:#44351e}.pill.weak,.pill.stale{color:#ffb2b2;background:#492a31}
 .note{font-size:12px;color:var(--muted)}.notes{margin-top:24px;padding:20px}.notes strong{color:var(--ink)}footer{margin-top:24px;color:var(--muted);font-size:12px}
 @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}main{padding:30px 14px}}
+.plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.plan-grid label{display:block;color:var(--muted);font-size:12px}
+.plan-grid input,.plan-grid select{display:block;width:100%;margin-top:6px}
+.plan-grid select{background:#0b1726;color:var(--ink);border:1px solid var(--line);padding:10px;border-radius:8px}
+.calc-btn{border:0;background:#75e4b9;color:#102020;padding:11px 16px;border-radius:8px;font:inherit;font-weight:bold;cursor:pointer}
+.result{margin-top:12px;padding:14px;background:#0b1726;border-radius:8px}
+@media(max-width:600px){.plan-grid{grid-template-columns:1fr}}
 </style></head><body><main>
 <header><small>Daily research · US equities</small><h1>Stock research dashboard</h1>
 <p>Automated, explainable technical screening. Rankings identify securities for further research, not orders to buy or sell.</p></header>
@@ -32,9 +39,77 @@ input{background:#0b1726;color:var(--ink);border:1px solid var(--line);padding:1
 <td class="minor">{{ row.risk }}</td>
 <td class="note"><strong>Strength:</strong> {{ row.strengths[0] if row.strengths else "No technical rule passed" }}<br><strong>Concern:</strong> {{ row.concerns[0] if row.concerns else "Valuation not assessed" }}<details><summary>All scoring rules</summary>{% for rule in row.rules %}<div>{{ '✓' if rule.passed else '×' }} {{ rule.name }} ({{ rule.points }} pts)</div>{% endfor %}</details></td>
 </tr>{% endfor %}</tbody></table></div></section>
+
+<section class="panel" style="margin-top:24px" aria-label="Swing scenario research">
+<div class="bar"><h2>When to consider a buy or sell — conditional research</h2></div>
+<div style="padding:0 18px 18px">
+<p><strong>This is not a buy or sell instruction.</strong> For a 1–5 trading-day research window, a hypothetical breakout entry is one cent above the <strong>previously completed 20-session high</strong>. A potential exit scenario places a stop 1.5 × ATR(14) below that entry, with profit targets 2R and 3R above entry. Skip if the next session opens more than 0.5 × ATR above the trigger. Prices can gap through stops; none of these levels is guaranteed or backtested.</p>
+<p>Exact source-derived dollar levels are not published automatically because the current market feed has no verified public redistribution rights. You can calculate your own hypothetical dollar levels in this browser from values provided by your authorized market-data source. Your inputs stay on this device; no data is sent or stored.</p>
+<div class="overflow">
+<table style="min-width:650px"><thead><tr><th>Symbol</th><th>Scenario gate</th><th>Reason or invalidation</th><th>Planning window</th></tr></thead>
+<tbody>
+{% for row in rows %}
+<tr><td><strong>{{ row.symbol }}</strong></td>
+<td>{{ row.plan_status|default("UNAVAILABLE")|replace("_", " ") }}</td>
+<td class="note">{{ row.plan_reason|default("Data not assessed") }}</td>
+<td class="minor">1–5 completed trading sessions after {{ row.asof }}. Recalculate if new close, earnings, halt, split, or invalidation occurs.</td>
+</tr>
+{% endfor %}
+</tbody></table></div>
+<form id="research-plan-calculator" autocomplete="off">
+<div class="plan-grid">
+<label for="plan-symbol">Symbol
+<select id="plan-symbol" required>{% for row in rows %}<option value="{{ row.symbol }}">{{ row.symbol }}</option>{% endfor %}</select></label>
+<label for="plan-close">Last completed regular-session close (USD)
+<input id="plan-close" type="number" step="any" min="0.0001" required placeholder="Enter broker-sourced close"></label>
+<label for="plan-high">Highest high of last 20 completed sessions (USD)
+<input id="plan-high" type="number" step="any" min="0.0001" required placeholder="20-session high"></label>
+<label for="plan-atr">Wilder ATR(14) on split-consistent raw daily bars (USD)
+<input id="plan-atr" type="number" step="any" min="0.0001" required placeholder="Daily ATR(14)"></label>
+<label for="plan-adv">Average daily dollar turnover over 20 sessions (USD)
+<input id="plan-adv" type="number" step="any" min="0" required placeholder="e.g. 2500000"></label>
+<label for="plan-confirm">Verified input checks
+<select id="plan-confirm" required>
+<option value="">Choose</option>
+<option value="yes">Completed sessions, split basis, no recent split, fresh data</option>
+</select></label>
+</div>
+<button class="calc-btn" type="submit">Calculate conditional entry and exit levels</button>
+<div id="plan-calc-result" class="result" role="status" aria-live="polite">Enter verified broker data to calculate hypothetical levels. No prices are downloaded here.</div>
+</form>
+</div></section>
+
 {% if errors %}<p role="status">Unavailable: {{ errors | join('; ') }}</p>{% endif %}
 <section class="notes"><strong>Method:</strong> Price above 200-day average (30), 50-day above 200-day average (20), positive 3-month momentum (20), positive 6-month momentum (20), annualized 63-day volatility below 40% (10). Candidate ≥70, monitor 40–69, weak setup below 40. These are unvalidated heuristic scores. <strong>Scores do not assess intrinsic value</strong>, fundamentals, tax situation, diversification, or future returns. Data may be delayed. Suppressed scores indicate stale market history.<br><br><strong>Publication:</strong> No raw prices or price histories are published. Data licensing must be confirmed for any public redistribution of derived research. Research only; not personalized financial advice.</section>
 <footer>Generated {{ generated_at }} · Free static research prototype · No trading integration</footer>
 </main><script>
 document.getElementById('search').addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();document.querySelectorAll('#results tr').forEach(r=>r.hidden=!r.dataset.search.toLowerCase().includes(q))});
+
+document.getElementById('research-plan-calculator').addEventListener('submit', function(event) {
+event.preventDefault();
+const o=document.getElementById('plan-calc-result');
+const symbol=document.getElementById('plan-symbol').value;
+const close=Number(document.getElementById('plan-close').value);
+const hi=Number(document.getElementById('plan-high').value);
+const atr=Number(document.getElementById('plan-atr').value);
+const adv=Number(document.getElementById('plan-adv').value);
+const verified=document.getElementById('plan-confirm').value==='yes';
+if (!verified||![close,hi,atr,adv].every(Number.isFinite)||close<=0||hi<=0||atr<=0||adv<0||hi<close) {
+ o.textContent='NO TRADE: validate completed-session data, adjustment basis and positive inputs.';return;
+}
+if(close<5){o.textContent=symbol+': NO TRADE — below USD 5.00 initial research floor.';return;}
+if(adv<2000000){o.textContent=symbol+': NO TRADE — daily dollar turnover below USD 2 million initial floor.';return;}
+const cent=0.01;
+const entry=Math.round((Math.ceil(hi*100-1e-8)/100+cent)*100)/100;
+const stop=Math.floor((entry-1.5*atr)*100+1e-8)/100;
+const risk=entry-stop;
+if(stop<=0||risk<=0||risk/entry>0.15){o.textContent=symbol+': NO TRADE — modeled stop distance exceeds risk limit or is invalid.';return;}
+const t2=Math.ceil((entry+2*risk)*100-1e-8)/100;
+const t3=Math.ceil((entry+3*risk)*100-1e-8)/100;
+const skip=Math.ceil((entry+0.5*atr)*100-1e-8)/100;
+const usd=n=>'
++n.toFixed(2);
+o.textContent=symbol+' — RESEARCH ONLY. Consider a breakout only after price rises above '+usd(entry)+' during regular hours, subject to a fresh quote and executable spread. Hypothetical stop '+usd(stop)+'; first profit target '+usd(t2)+' (2R), second target '+usd(t3)+' (3R). Skip a gap open above '+usd(skip)+'. Initial risk distance '+(100*risk/entry).toFixed(2)+'%. Scenario expires within five sessions and must be recalculated after a new completed daily bar. No demonstrated positive expectancy; slippage, fees and gaps can change every result.';
+});
+
 </script></body></html>
