@@ -4,3 +4,6 @@ __pycache__/
 .venv/
 site/
 .env
+
+# Personal market-price scenarios are not approved for public redistribution
+private_reports/
