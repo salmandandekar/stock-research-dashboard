@@ -4,9 +4,24 @@
     "MSFT",
     "NVDA",
     "GOOGL",
-    "AMZN"
+    "AMZN",
+    "LUNR",
+    "MNSO",
+    "GRRR",
+    "URG",
+    "LTRX",
+    "LCID",
+    "NOK",
+    "FLNA"
   ],
   "publication": {
-    "show_quotes": false
+    "show_quotes": false,
+    "show_price_levels": false,
+    "price_display_rights_verified": false
+  },
+  "notes": {
+    "LUNR": "NASDAQ: Intuitive Machines, not TSX LunR Royalties",
+    "FLNA": "Nasdaq: Filana Therapeutics, formerly SAVA; low-priced and listing-risk flag",
+    "URG": "NYSE American uranium stock; may fall below price floor"
   }
 }
