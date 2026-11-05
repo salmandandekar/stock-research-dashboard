@@ -59,3 +59,17 @@ Read `docs/SHORT_TERM_OPPORTUNITY_REQUIREMENTS.md` and `config/short_term_strate
 **Later PR:** Add delayed historical minute-bar integration with provider/venue/latency/cost and licensing safeguards. Live intraday research requires a separate, monitored, licensed streaming runtime, not GitHub Pages alone. Add ST-T04/07/08/11/14/15/22.
 
 Never label research results as "Buy now" or "profitable" without appropriate evidence and legal/product approvals. Returns may be negative. Never create order execution. Do not merge implementation PRs automatically; report real test outputs and unresolved data rights.
+
+
+## Steelman v1.2a implementation constraints
+
+Read `docs/SHORT_TERM_STEELMAN.md`. New requirements ST-SM-01..16 and tests SM-T01..16 strengthen the already proposed v1.2 requirements.
+
+- Implement a `MechanismRegistry` with immutable versions, feature availability timestamps, experiment budget, expected holding horizon, causal rationale, and predefined falsifiers. No mechanism => research only, never "validated".
+- Initial MVP: **one versioned daily EOD swing research hypothesis** with a clearly defined eligible universe, baseline, conservative next-available execution costs, rejected/unfilled cases, NO_TRADE, and source-rights gates.
+- Validate a minimum simple counterfactual (no-trade/cash and low-complexity time-matched strategy). Test net expectancy, downside tails, sample dependence and 2x cost stress before adding complexity.
+- Maintain a ledger of **all** emitted and withheld candidate signals, their original timestamps, source IDs, strategy version, state and eventual observed outcome. Include no-trade days and expiry.
+- Keep academic intraday patterns as test hypotheses; they do not transfer automatically from ETFs or older market samples to 2026 US equities. Never claim guaranteed returns or daily profit.
+- Before any live signal work: require authorized full-market data or explicitly limited-coverage semantics, continuous session worker, latency/error monitoring, realistic fill evaluation, and a separate reviewed release. Keep automated orders and tailored advice out of scope.
+
+Each implementation PR must cite linked ST/ST-SM requirement IDs, include adversarial fixture tests, record benchmark comparisons, and disclose negative outcomes.
