@@ -47,3 +47,15 @@ Read `docs/STEELMAN_REVIEW.md` before work. Implement the following in a staged,
 - AM-04/05: optional read-only AI bull/bear reviewer; source-ground every material assertion and compare effectiveness to a no-AI baseline.
 - AM-09/14: public license and private-portfolio boundaries fail closed.
 - Deliver one narrow PR per independently testable capability. Never mark red-team or alpha gates complete based solely on documentation.
+
+## Additional governed implementation scope — v1.2 short-term opportunity scanner
+
+Read `docs/SHORT_TERM_OPPORTUNITY_REQUIREMENTS.md` and `config/short_term_strategy.example.json`. The example configuration is disabled by default and MUST NOT be treated as live functionality.
+
+**First coding deliverable after source and provenance foundation:** Add a market-wide eligible universe abstraction and 1–5-day batch *swing research* evaluator. Keep intraday live mode disabled. Implement separately versioned horizon IDs, deterministic net-of-cost cost simulation, explicit NO_TRADE and NOT_VALIDATED states, expiry and evidence timestamps, and reproducible acceptance tests ST-T01, ST-T03, ST-T06, ST-T16, ST-T17 and ST-T18.
+
+**Subsequent PR:** Build realistic point-in-time fill simulation, original signal records, corporate-action and same-candle ambiguity safeguards, historical delistings, benchmark+regime evaluation, and holdout. Add ST-T02/05/09/10/12/13/19/20/21.
+
+**Later PR:** Add delayed historical minute-bar integration with provider/venue/latency/cost and licensing safeguards. Live intraday research requires a separate, monitored, licensed streaming runtime, not GitHub Pages alone. Add ST-T04/07/08/11/14/15/22.
+
+Never label research results as "Buy now" or "profitable" without appropriate evidence and legal/product approvals. Returns may be negative. Never create order execution. Do not merge implementation PRs automatically; report real test outputs and unresolved data rights.
