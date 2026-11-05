@@ -250,3 +250,24 @@ Do not promise calendar duration before data-provider licensing and historical d
 See [STEELMAN_REVIEW.md](STEELMAN_REVIEW.md) for the strongest build justification, strongest case for buying an existing portal instead, three falsification rounds, and the prioritized additional requirements **AM-01 through AM-14**.
 
 **Normative extension:** AM-01, AM-09, AM-12 are foundational decision controls. The product MUST measure research utility independent of predictive performance; it MUST keep portfolio-specific advice separate from the public research system; and it MUST permit abstention with contradictory evidence. AM-02/03/06/07/08/10/11/13/14 are controlled implementation requirements. AM-04/05 apply only when the optional AI module is introduced. The existing FR and G gates remain binding. No presumed alpha or valid investment advice is inferred from design approval.
+
+## 12. Multi-horizon opportunity discovery extension — v1.2
+
+**Normative addition:** [SHORT_TERM_OPPORTUNITY_REQUIREMENTS.md](SHORT_TERM_OPPORTUNITY_REQUIREMENTS.md) defines BR-STD-01, ST-01 through ST-32, ST-T01 through ST-T22, and release gates D0 through D4. These requirements extend, and do not replace, the existing financial-data quality, licensing, valuation, benchmark, audit, AI and legal requirements.
+
+### Change in scope
+- Analyze stocks discovered from a documented US-listed eligible universe, not just a manually selected watchlist.
+- Evaluate **intraday (5–60 minutes), swing (1–5 trading days), and existing position-investment** horizons independently.
+- Define a hypothetical opportunity using **net executable return expectancy, realistic costs, risk and validation**, not movement magnitude or an arbitrary score.
+- Permit explicit **NO_TRADE**, EXPIRED and NOT_VALIDATED states. Neither a recommendation count nor an estimated return is mandatory.
+- The existing GitHub Actions/Pages architecture can support **batch swing research**. It SHALL NOT describe delayed/partial market data as live intraday opportunities. Any real-time scanner requires a licensed feed and a reliable separate worker.
+- No trading, leverage, shorts, margin or personalization is added to the original public research product.
+- Public source rights and FINRA/broker-specific rules must be checked at their relevant release gates.
+
+### Priority of staged delivery
+**First:** existing evidence/source governance and identity requirements.  
+**Then:** market-wide daily EOD swing discovery, cost model and No Trade behavior, in parallel with basic fundamental factors.  
+**Then:** robust point-in-time intraday/swing backtesting and falsification.  
+**Later:** delayed historical intraday research, prospective paper alerting and a separately approved licensed live signal runtime.
+
+All earlier gates G0–G6 remain mandatory. **D0 passed at design level only; no trading-signal implementation, alpha or paper-validation claim is authorized.**
