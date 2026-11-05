@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'analyze.py'
+      - 'trade_plan.py'
+      - 'quant_core.py'
       - 'watchlist.json'
       - 'site_template.html'
       - 'requirements.txt'
