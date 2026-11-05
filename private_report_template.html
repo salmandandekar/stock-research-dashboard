@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Private Daily Swing Research</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1321;--card:#132236;--ink:#f0f5fd;--muted:#afc0d5;--border:#34506a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1250px;margin:0 auto;padding:32px 16px}h1{margin:6px 0 8px;font-size:clamp(1.7rem,4vw,2.6rem)}
+p,.muted{color:var(--muted)}header small{letter-spacing:.12em;text-transform:uppercase;color:#6de3ba}
+.notice,.summary{border:1px solid var(--border);background:var(--card);padding:16px;border-radius:12px;margin:18px 0}
+table{border-collapse:collapse;width:100%;min-width:1050px}th,td{text-align:left;border-bottom:1px solid var(--border);padding:12px 10px;vertical-align:top}
+th{color:var(--muted);font-size:12px;text-transform:uppercase;white-space:nowrap}td{font-variant-numeric:tabular-nums}
+.money{color:#8de7bb;font-weight:700}small{font-size:12px}.scroll{overflow-x:auto;border:1px solid var(--border);border-radius:12px}
+.badge{display:inline-block;background:#314760;padding:3px 7px;border-radius:8px;font-size:12px}footer{font-size:12px;color:var(--muted);margin:24px 0}
+</style></head><body><main>
+<header><small>Personal report · Not for public redistribution</small>
+<h1>Automatically calculated swing research levels</h1>
+<p>Generated {{ generated_at }} · Provider: {{ provider }} · 1–5-session hypothetical horizon · {{ rows|length }} symbols checked</p></header>
+<div class="notice" role="note"><strong>Research only. No automatic orders.</strong> A conditional entry is one cent above the completed 20-session high. A hypothetical stop is 1.5 × ATR(14) below entry, and 2R/3R targets are arithmetic scenarios. These are <strong>not backtested profit forecasts</strong>, guaranteed order fills, live quotes, or personalized buy/sell advice. Check the latest broker quote, spread, earnings, halt and gap before any decision. A stop can fill at a worse price.</div>
+<div class="summary">
+<strong>How to read the conditions:</strong> A hypothetical entry is considered only if a future regular-session price crosses the trigger after the market opens. Skip opening gaps above the gap ceiling. The stop and targets apply only <em>after an actual entry</em>. This report cannot tell whether a live trigger or stop has fired. It expires when the next completed session changes the inputs or data freshness fails. Do not trade from stale cached reports.
+</div>
+<div class="scroll"><table>
+<thead><tr><th>Symbol / as of</th><th>Eligibility</th><th>Conditional entry</th><th>Stop scenario</th><th>Take profit 2R</th><th>Take profit 3R</th><th>Skip open above</th><th>Risk / ATR</th><th>Reason</th></tr></thead>
+<tbody>
+{% for r in rows %}
+<tr><td><strong>{{ r.symbol }}</strong><div class="muted"><small>{{ r.data_asof }}</small></div></td>
+<td><span class="badge">{{ r.setup_status|replace("_"," ") }}</span></td>
+<td>{% if r.allowed %}<span class="money">USD {{ r.entry }}</span>{% else %}—{% endif %}</td>
+<td>{% if r.allowed %}USD {{ r.stop }}{% else %}—{% endif %}</td>
+<td>{% if r.allowed %}USD {{ r.target2 }}{% else %}—{% endif %}</td>
+<td>{% if r.allowed %}USD {{ r.target3 }}{% else %}—{% endif %}</td>
+<td>{% if r.allowed %}USD {{ r.gap_limit }}{% else %}—{% endif %}</td>
+<td>{% if r.allowed %}{{ r.risk_pct }}% / USD {{ r.atr }}{% else %}—{% endif %}</td>
+<td class="muted"><small>{{ r.reason }}</small></td>
+</tr>
+{% endfor %}
+</tbody></table></div>
+{% if issues %}<section class="notice"><strong>Market-data issues:</strong><ul>{% for issue in issues %}<li>{{ issue }}</li>{% endfor %}</ul></section>{% endif %}
+<footer>Personal device only. Store this file outside public repositories, websites and shared drives. Alpaca SIP feed is delayed historical data, not real-time execution; IEX covers only one venue. NO TRADE remains a valid outcome.</footer>
+</main></body></html>
