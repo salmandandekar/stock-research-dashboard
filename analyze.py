@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from quant_core import daily_volatility, price_return, sma
+from trade_plan import build_swing_scenario, ScenarioError
 
 ROOT = Path(__file__).resolve().parent
 LOG = logging.getLogger("stock-research")
@@ -62,13 +63,13 @@ def analyze_stock(symbol: str, closes: pd.Series, today=None) -> dict:
     }
 
 
-def fetch_closes(symbol: str) -> pd.Series:
+def fetch_history(symbol: str) -> pd.DataFrame:
     import yfinance as yf
     last_error = None
     for attempt in range(3):
         try:
-            frame = yf.Ticker(symbol).history(period="18mo", auto_adjust=True)
-            if frame.empty or "Close" not in frame:
+            frame = yf.Ticker(symbol).history(period="18mo", auto_adjust=False, actions=True)
+            if frame.empty or not {"Close", "Adj Close", "High", "Low", "Volume"}.issubset(frame.columns):
                 raise ValueError("Empty or invalid market history")
             # A daily OHLC bar may be partially formed before a reliable close.
             # Keep this run end-of-day only. 17:00 ET is a conservative cutoff,
@@ -79,7 +80,7 @@ def fetch_closes(symbol: str) -> pd.Series:
                 frame = frame.loc[[d < ny_now.date() for d in dates]]
             if frame.empty:
                 raise ValueError("No completed daily price bars available")
-            return frame["Close"]
+            return frame
         except Exception as exc:
             last_error = exc
             LOG.warning("%s fetch attempt %d failed: %s", symbol, attempt + 1, exc)
@@ -88,14 +89,59 @@ def fetch_closes(symbol: str) -> pd.Series:
     raise RuntimeError(f"{symbol}: no market data") from last_error
 
 
+def fetch_closes(symbol: str) -> pd.Series:
+    """Adjusted series for the legacy scoring model; no executable quote."""
+    return fetch_history(symbol)["Adj Close"]
+
+
+def analyze_history(symbol: str, frame: pd.DataFrame,
+                    *, today=None) -> dict:
+    """Evaluate adjusted technical screen and raw-price research scenario.
+
+    Do not use adjusted prices as hypothetical executable fills. Numeric
+    scenarios are not copied into the public HTML until data rights are cleared.
+    """
+    if frame.empty or not {"High", "Low", "Close", "Adj Close", "Volume"}.issubset(frame):
+        raise ValueError("Missing OHLCV or adjusted close")
+    asof = str(pd.Timestamp(frame.index[-1]).date())
+    try:
+        result = analyze_stock(symbol, frame["Adj Close"], today=today)
+    except ValueError as exc:
+        result = {
+            "symbol": symbol, "score": None, "signal": "Insufficient evidence",
+            "risk": "Not assessed", "asof": asof, "stale": True,
+            "strengths": [], "concerns": [str(exc)], "rules": [],
+        }
+    recent_splits = ("Stock Splits" in frame and
+                     bool((frame["Stock Splits"].tail(21).fillna(0) != 0).any()))
+    try:
+        scenario = build_swing_scenario(
+            symbol, frame["High"].tolist(), frame["Low"].tolist(),
+            frame["Close"].tolist(), frame["Volume"].tolist(), asof,
+            split_in_recent_window=recent_splits)
+        result["scenario"] = scenario
+        result["plan_status"] = (
+            "STALE" if result["stale"] else scenario.status
+        )
+        result["plan_reason"] = (
+            "Stale or insufficient completed price history" if result["stale"]
+            else scenario.reason
+        )
+    except (ScenarioError, ValueError) as exc:
+        result["plan_status"] = "INSUFFICIENT_EVIDENCE"
+        result["plan_reason"] = str(exc)
+        result["scenario"] = None
+    return result
+
+
 def render(rows: list[dict], errors: list[str], generated_at: str) -> str:
     env = Environment(loader=FileSystemLoader(str(ROOT)),
                       autoescape=select_autoescape(["html"]))
     return env.get_template("site_template.html").render(
-        rows=sorted(rows, key=lambda row: (row["stale"], -row["score"], row["symbol"])),
+        rows=sorted(rows, key=lambda row: (row["stale"], -(row["score"] if row["score"] is not None else -1), row["symbol"])),
         errors=errors, generated_at=generated_at,
-        candidate_count=sum(r["score"] >= 70 and not r["stale"] for r in rows),
-        monitor_count=sum(40 <= r["score"] < 70 and not r["stale"] for r in rows),
+        candidate_count=sum(r["score"] is not None and r["score"] >= 70 and not r["stale"] for r in rows),
+        monitor_count=sum(r["score"] is not None and 40 <= r["score"] < 70 and not r["stale"] for r in rows),
         stale_count=sum(r["stale"] for r in rows))
 
 
@@ -111,10 +157,10 @@ def main() -> None:
     rows, errors = [], []
     for symbol in symbols:
         try:
-            row = analyze_stock(symbol, fetch_closes(symbol))
+            row = analyze_history(symbol, fetch_history(symbol))
             rows.append(row)
-            LOG.info("%s: score=%s, data-as-of=%s, stale=%s",
-                     symbol, row["score"], row["asof"], row["stale"])
+            LOG.info("%s: score=%s, plan_status=%s, data-as-of=%s, stale=%s",
+                     symbol, row["score"], row["plan_status"], row["asof"], row["stale"])
         except Exception as exc:
             LOG.exception("Failed analyzing %s", symbol)
             errors.append(f"{symbol}: unavailable ({type(exc).__name__})")
