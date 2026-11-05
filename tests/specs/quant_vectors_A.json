@@ -1,0 +1,271 @@
+{
+  "schema": "QFCS-GOLDEN-v1.3",
+  "data": "SYNTHETIC",
+  "verified": "ARITHMETIC_EXAMPLES_ONLY_NOT_EXECUTED_TESTS",
+  "abs_tol": 1e-9,
+  "cases": [
+    {
+      "id": "G01",
+      "formula": "QF-M01",
+      "input": {
+        "p0": 100,
+        "p1": 105
+      },
+      "expected": {
+        "value": 0.05
+      }
+    },
+    {
+      "id": "G02",
+      "formula": "QF-M02",
+      "input": {
+        "p0": 100,
+        "p1": 105,
+        "dividend": 1
+      },
+      "expected": {
+        "value": 0.06
+      }
+    },
+    {
+      "id": "G03",
+      "formula": "QF-M04",
+      "input": {
+        "r": [
+          0.1,
+          -0.05
+        ]
+      },
+      "expected": {
+        "value": 0.045
+      }
+    },
+    {
+      "id": "G04",
+      "formula": "QF-M15",
+      "input": {
+        "bid": 99.9,
+        "ask": 100.1
+      },
+      "expected": {
+        "spread_bps": 20
+      }
+    },
+    {
+      "id": "G05",
+      "formula": "QF-M15",
+      "input": {
+        "bid": 100.2,
+        "ask": 100.1
+      },
+      "expected": {
+        "status": "INVALID_QUOTE"
+      }
+    },
+    {
+      "id": "G06",
+      "formula": "QF-M11",
+      "input": {
+        "wealth": [
+          100,
+          110,
+          99,
+          120,
+          90,
+          115
+        ]
+      },
+      "expected": {
+        "max_drawdown": 0.25
+      }
+    },
+    {
+      "id": "G07",
+      "formula": "QF-V02",
+      "input": {
+        "E_weight": 0.8,
+        "D_weight": 0.2,
+        "ke": 0.1,
+        "kd": 0.05,
+        "tax": 0.25
+      },
+      "expected": {
+        "wacc": 0.0875
+      }
+    },
+    {
+      "id": "G08",
+      "formula": "QF-V04",
+      "input": {
+        "fcff": [
+          100,
+          110,
+          121
+        ],
+        "wacc": 0.1,
+        "g": 0.03
+      },
+      "expected": {
+        "enterprise_value": 1610.38961038961
+      }
+    },
+    {
+      "id": "G09",
+      "formula": "QF-V05",
+      "input": {
+        "fcff_last": 121,
+        "wacc": 0.02,
+        "g": 0.03
+      },
+      "expected": {
+        "status": "INVALID_TERMINAL_GROWTH"
+      }
+    },
+    {
+      "id": "G10",
+      "formula": "QF-V08",
+      "input": {
+        "price": 80,
+        "fair_value": 100
+      },
+      "expected": {
+        "upside": 0.25,
+        "margin_of_safety": 0.2
+      }
+    },
+    {
+      "id": "G11",
+      "formula": "QF-F06",
+      "input": {
+        "ebit": 150,
+        "tax": 0.25,
+        "cap_begin": 500,
+        "cap_end": 550
+      },
+      "expected": {
+        "roic": 0.21428571428571427
+      }
+    },
+    {
+      "id": "G12",
+      "formula": "QF-F04",
+      "input": {
+        "cfo": 120,
+        "capex_positive": 50
+      },
+      "expected": {
+        "fcf": 70
+      }
+    },
+    {
+      "id": "G13",
+      "formula": "QF-F02",
+      "input": {
+        "prior": -5,
+        "current": 10
+      },
+      "expected": {
+        "status": "NOT_MEANINGFUL"
+      }
+    },
+    {
+      "id": "G14",
+      "formula": "QF-F09",
+      "input": {
+        "debt": 500,
+        "ebitda": 0
+      },
+      "expected": {
+        "status": "NOT_MEANINGFUL"
+      }
+    },
+    {
+      "id": "G15",
+      "formula": "QF-T01",
+      "input": {
+        "shares": 100,
+        "buy": 100.1,
+        "sell": 101.2,
+        "buy_fee": 1,
+        "sell_fee": 1
+      },
+      "expected": {
+        "entry_cash": 10011,
+        "exit_cash": 10119,
+        "net_pnl": 108,
+        "net_roi": 0.010788133053640995
+      }
+    },
+    {
+      "id": "G16",
+      "formula": "QF-T04",
+      "input": {
+        "p_win": 0.55,
+        "gross_win": 0.015,
+        "p_loss": 0.45,
+        "gross_loss_abs": 0.02,
+        "cost": 0.0015
+      },
+      "expected": {
+        "expectancy": -0.00225,
+        "status": "NO_TRADE"
+      }
+    },
+    {
+      "id": "G17",
+      "formula": "QF-T14",
+      "input": {
+        "buy_ask": 100.2,
+        "sell_bid": 100
+      },
+      "expected": {
+        "return": -0.001996007984031989
+      }
+    },
+    {
+      "id": "G18",
+      "formula": "QF-T09",
+      "input": {
+        "high": 105,
+        "low": 95,
+        "stop": 98,
+        "target": 104,
+        "tick_order_unknown": true
+      },
+      "expected": {
+        "status": "AMBIGUOUS_EXECUTION"
+      }
+    },
+    {
+      "id": "G19",
+      "formula": "QF-T08",
+      "input": {
+        "stop": 90,
+        "executable_next_open": 70
+      },
+      "expected": {
+        "max_optimistic_exit": 70,
+        "flag": "GAP_BELOW_STOP"
+      }
+    },
+    {
+      "id": "G20",
+      "formula": "QF-B04",
+      "input": {
+        "returns": [
+          0,
+          0,
+          0
+        ],
+        "rf": [
+          0,
+          0,
+          0
+        ]
+      },
+      "expected": {
+        "status": "UNDEFINED_SHARPE"
+      }
+    }
+  ]
+}
