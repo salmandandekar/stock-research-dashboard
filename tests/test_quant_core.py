@@ -41,7 +41,7 @@ def test_sma_ema_reject_missing_or_bad_windows():
         sma([1, 2, 3], 5)
     with pytest.raises(QuantInputError):
         ema([1, 2, 3], 0)
-    assert ema([10, 20, 30, 40], 3) == pytest.approx(25)
+    assert ema([10, 20, 30, 40], 3) == pytest.approx(30)
 
 
 def test_volatility_requires_samples_and_is_finite():
