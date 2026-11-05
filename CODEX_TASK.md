@@ -73,3 +73,15 @@ Read `docs/SHORT_TERM_STEELMAN.md`. New requirements ST-SM-01..16 and tests SM-T
 - Before any live signal work: require authorized full-market data or explicitly limited-coverage semantics, continuous session worker, latency/error monitoring, realistic fill evaluation, and a separate reviewed release. Keep automated orders and tailored advice out of scope.
 
 Each implementation PR must cite linked ST/ST-SM requirement IDs, include adversarial fixture tests, record benchmark comparisons, and disclose negative outcomes.
+
+## Quantitative engineering gate — v1.3
+
+Review `docs/quant/01_MARKET_MATH.md`, `02_FUNDAMENTALS.md`, `03_VALUATION.md`, `04_EXECUTION_COSTS.md`, `05_PORTFOLIO_RISK.md`, `06_STATISTICAL_VALIDATION.md` and `07_RED_TEAM_STEELMAN.md` before any quantitative coding.
+
+**Do not implement metrics from memory or merely copy arithmetic values.** Each formula needs a typed deterministic function, required input time, unit, currency, valid denominator, data adjustment policy, missing behavior, source rights, parameter version, independent numeric oracle and code SHA.
+
+- Deliver modular PRs: market/quotes and SEC PIT -> fundamentals -> valuation -> execution cost/fills -> portfolio NAV/risk -> statistical tests.
+- Use the 40 synthetic spec vectors in `tests/specs/quant_vectors_A.json` and `quant_vectors_B.json`; they do not cover all formulas. Build additional independent property tests and edge cases for each formula.
+- Implement 50 red-team scenarios QA-01..QA-50 as regression tests, record failure and fixed code SHA; do not mark a test passed because it was written in Markdown.
+- Fail closed for look-ahead, negative denominator, stale license, insufficient venue data, dividend/spread/fee duplication, impossible OHLC fill, unvalidated probabilities, and contaminated holdout.
+- No buy/sell instructions, brokerage orders, private portfolio exports, or historical alpha claims without separate approval. Do not auto-merge.
