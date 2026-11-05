@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.2-design-example",
+  "enabled": false,
+  "run_mode": "RESEARCH_ONLY",
+  "market": "US_EQUITIES",
+  "publication": {
+    "allow_unverified_data_rights": false,
+    "allow_real_time_label_without_full_entitlement": false,
+    "allow_trade_instructions": false
+  },
+  "universe": {
+    "type": "US_LISTED_COMMON_STOCKS",
+    "default_watchlist_only": false,
+    "example_filters_not_validated": {
+      "min_last_price_usd": 5,
+      "min_20_day_dollar_turnover_usd": 20000000,
+      "max_median_spread_bps": 20
+    }
+  },
+  "horizons": {
+    "INTRADAY_5_TO_60_MIN": {
+      "enabled": false,
+      "requires_licensed_live_data": true,
+      "must_not_use_github_scheduled_job_for_live_signal": true,
+      "allowed_session": "REGULAR_ONLY"
+    },
+    "SWING_1_TO_5_DAYS": {
+      "enabled": false,
+      "allowed_session": "EOD_BATCH_RESEARCH",
+      "requires_gap_risk": true
+    },
+    "POSITION_20_TO_252_DAYS": {
+      "enabled": false,
+      "delegates_to": "approved_long_horizon_analysis"
+    }
+  },
+  "economic_model": {
+    "required_costs": [
+      "entry_spread",
+      "exit_spread",
+      "slippage",
+      "commissions_and_fees"
+    ],
+    "require_positive_oos_net_expectancy": true,
+    "allow_undefined_expected_returns": true,
+    "treat_volatility_as_profitability": false
+  },
+  "default_outcome": "NOT_VALIDATED",
+  "investment_action": "NONE",
+  "validation": {
+    "holdout_locked": true,
+    "point_in_time_required": true,
+    "paper_tracking_required": true,
+    "illustrative_minimum_paper_sessions": 60,
+    "illustrative_minimum_independent_paper_trades": 200
+  }
+}
