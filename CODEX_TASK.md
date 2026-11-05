@@ -47,3 +47,29 @@ Read `docs/STEELMAN_REVIEW.md` before work. Implement the following in a staged,
 - AM-04/05: optional read-only AI bull/bear reviewer; source-ground every material assertion and compare effectiveness to a no-AI baseline.
 - AM-09/14: public license and private-portfolio boundaries fail closed.
 - Deliver one narrow PR per independently testable capability. Never mark red-team or alpha gates complete based solely on documentation.
+
+## Additional governed implementation scope — v1.2 short-term opportunity scanner
+
+Read `docs/SHORT_TERM_OPPORTUNITY_REQUIREMENTS.md` and `config/short_term_strategy.example.json`. The example configuration is disabled by default and MUST NOT be treated as live functionality.
+
+**First coding deliverable after source and provenance foundation:** Add a market-wide eligible universe abstraction and 1–5-day batch *swing research* evaluator. Keep intraday live mode disabled. Implement separately versioned horizon IDs, deterministic net-of-cost cost simulation, explicit NO_TRADE and NOT_VALIDATED states, expiry and evidence timestamps, and reproducible acceptance tests ST-T01, ST-T03, ST-T06, ST-T16, ST-T17 and ST-T18.
+
+**Subsequent PR:** Build realistic point-in-time fill simulation, original signal records, corporate-action and same-candle ambiguity safeguards, historical delistings, benchmark+regime evaluation, and holdout. Add ST-T02/05/09/10/12/13/19/20/21.
+
+**Later PR:** Add delayed historical minute-bar integration with provider/venue/latency/cost and licensing safeguards. Live intraday research requires a separate, monitored, licensed streaming runtime, not GitHub Pages alone. Add ST-T04/07/08/11/14/15/22.
+
+Never label research results as "Buy now" or "profitable" without appropriate evidence and legal/product approvals. Returns may be negative. Never create order execution. Do not merge implementation PRs automatically; report real test outputs and unresolved data rights.
+
+
+## Steelman v1.2a implementation constraints
+
+Read `docs/SHORT_TERM_STEELMAN.md`. New requirements ST-SM-01..16 and tests SM-T01..16 strengthen the already proposed v1.2 requirements.
+
+- Implement a `MechanismRegistry` with immutable versions, feature availability timestamps, experiment budget, expected holding horizon, causal rationale, and predefined falsifiers. No mechanism => research only, never "validated".
+- Initial MVP: **one versioned daily EOD swing research hypothesis** with a clearly defined eligible universe, baseline, conservative next-available execution costs, rejected/unfilled cases, NO_TRADE, and source-rights gates.
+- Validate a minimum simple counterfactual (no-trade/cash and low-complexity time-matched strategy). Test net expectancy, downside tails, sample dependence and 2x cost stress before adding complexity.
+- Maintain a ledger of **all** emitted and withheld candidate signals, their original timestamps, source IDs, strategy version, state and eventual observed outcome. Include no-trade days and expiry.
+- Keep academic intraday patterns as test hypotheses; they do not transfer automatically from ETFs or older market samples to 2026 US equities. Never claim guaranteed returns or daily profit.
+- Before any live signal work: require authorized full-market data or explicitly limited-coverage semantics, continuous session worker, latency/error monitoring, realistic fill evaluation, and a separate reviewed release. Keep automated orders and tailored advice out of scope.
+
+Each implementation PR must cite linked ST/ST-SM requirement IDs, include adversarial fixture tests, record benchmark comparisons, and disclose negative outcomes.
