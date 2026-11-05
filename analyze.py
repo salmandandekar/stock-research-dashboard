@@ -8,10 +8,12 @@ import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+from quant_core import daily_volatility, price_return, sma
 
 ROOT = Path(__file__).resolve().parent
 LOG = logging.getLogger("stock-research")
@@ -19,18 +21,20 @@ SYMBOL = re.compile(r"^[A-Z0-9.^=\-]{1,18}$")
 
 
 def analyze_stock(symbol: str, closes: pd.Series, today=None) -> dict:
-    series = pd.to_numeric(closes, errors="coerce").dropna().astype(float)
-    series = series[~series.index.duplicated(keep="last")].sort_index()
+    series = pd.to_numeric(closes, errors="coerce").astype(float)
+    if series.isna().any() or series.index.has_duplicates:
+        raise ValueError(f"{symbol}: missing, nonnumeric or duplicate daily prices")
+    series = series.sort_index()
     if len(series) < 210:
         raise ValueError(f"{symbol}: need at least 210 trading closes")
     if not np.isfinite(series.to_numpy()).all() or (series <= 0).any():
         raise ValueError(f"{symbol}: prices must be positive and finite")
     last = float(series.iloc[-1])
-    sma50 = float(series.tail(50).mean())
-    sma200 = float(series.tail(200).mean())
-    mom3 = last / float(series.iloc[-64]) - 1
-    mom6 = last / float(series.iloc[-127]) - 1
-    volatility = float(series.pct_change().dropna().tail(63).std() * np.sqrt(252))
+    sma50 = sma(series.tail(50).tolist(), 50)
+    sma200 = sma(series.tail(200).tolist(), 200)
+    mom3 = price_return(float(series.iloc[-64]), last)
+    mom6 = price_return(float(series.iloc[-127]), last)
+    volatility = daily_volatility(series.pct_change().dropna().tail(63).tolist())
     if not math.isfinite(volatility):
         raise ValueError(f"{symbol}: volatility invalid")
     checks = [
@@ -66,6 +70,15 @@ def fetch_closes(symbol: str) -> pd.Series:
             frame = yf.Ticker(symbol).history(period="18mo", auto_adjust=True)
             if frame.empty or "Close" not in frame:
                 raise ValueError("Empty or invalid market history")
+            # A daily OHLC bar may be partially formed before a reliable close.
+            # Keep this run end-of-day only. 17:00 ET is a conservative cutoff,
+            # not an exchange holiday calendar or real-time feed guarantee.
+            ny_now = datetime.now(ZoneInfo("America/New_York"))
+            if ny_now.hour < 17:
+                dates = pd.DatetimeIndex(frame.index).date
+                frame = frame.loc[[d < ny_now.date() for d in dates]]
+            if frame.empty:
+                raise ValueError("No completed daily price bars available")
             return frame["Close"]
         except Exception as exc:
             last_error = exc
