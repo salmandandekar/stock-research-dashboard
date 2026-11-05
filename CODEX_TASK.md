@@ -35,3 +35,15 @@ Before any code change, read:
 - Any critical/high red-team defect blocks release.
 
 Open each change as a pull request against main with requirements IDs, tests, known limitations and deployment notes. **Do not claim all release gates passed from tests that have not been run.**
+
+
+## Steelman v1.1 mandatory engineering update
+Read `docs/STEELMAN_REVIEW.md` before work. Implement the following in a staged, reviewable way:
+- AM-01 and AM-12: measure a no-AI baseline, enforce candidate abstention, show contradictory evidence and a specific next diligence action.
+- AM-02: design the build-versus-buy 30-company pilot, including immutable cohort, human time, factual accuracy and licensing cost. Do not claim it has run until independently recorded.
+- AM-06: add sector-specific price-implied-expectations and internally consistent bear/base/bull scenarios when licensed data and the fundamentals model are ready.
+- AM-07/08: introduce a timestamped Thesis Ledger and an event-to-thesis reassessment process, not repeated uncontextualized daily Buy labels.
+- AM-03/11/13: benchmark all strategies against simple factors, broad and sector-matched baselines with identical point-in-time data and costs.
+- AM-04/05: optional read-only AI bull/bear reviewer; source-ground every material assertion and compare effectiveness to a no-AI baseline.
+- AM-09/14: public license and private-portfolio boundaries fail closed.
+- Deliver one narrow PR per independently testable capability. Never mark red-team or alpha gates complete based solely on documentation.

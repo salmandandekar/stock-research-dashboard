@@ -244,3 +244,9 @@ Do not promise calendar duration before data-provider licensing and historical d
 - https://www.sec.gov/files/divisions/investment/iaregulation/memoia.htm
 - https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits
 - https://github.com/ranaroussi/yfinance
+
+
+## 11. Steelman v1.1 requirements addendum
+See [STEELMAN_REVIEW.md](STEELMAN_REVIEW.md) for the strongest build justification, strongest case for buying an existing portal instead, three falsification rounds, and the prioritized additional requirements **AM-01 through AM-14**.
+
+**Normative extension:** AM-01, AM-09, AM-12 are foundational decision controls. The product MUST measure research utility independent of predictive performance; it MUST keep portfolio-specific advice separate from the public research system; and it MUST permit abstention with contradictory evidence. AM-02/03/06/07/08/10/11/13/14 are controlled implementation requirements. AM-04/05 apply only when the optional AI module is introduced. The existing FR and G gates remain binding. No presumed alpha or valid investment advice is inferred from design approval.
