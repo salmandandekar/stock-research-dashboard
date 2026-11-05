@@ -42,7 +42,7 @@ def _values(values: Sequence[float], min_count: int = 1) -> list[float]:
 
 def price_return(p0: float, p1: float) -> float:
     """QF-M01: price-only simple return, NOT dividend total return."""
-    return finite(p1, "p1") / positive(p0, "p0") - 1
+    return positive(p1, "p1") / positive(p0, "p0") - 1
 
 
 def total_return(p0: float, p1: float, cash_dividends: float = 0,
@@ -50,7 +50,7 @@ def total_return(p0: float, p1: float, cash_dividends: float = 0,
     """QF-M02: same-share-unit, cash-dividend holding return."""
     if dividend_adjusted and cash_dividends != 0:
         raise QuantInputError("dividend double counting")
-    return (finite(p1) + finite(cash_dividends) -
+    return (positive(p1, "p1") + finite(cash_dividends) -
             positive(p0, "p0")) / positive(p0, "p0")
 
 
@@ -113,7 +113,7 @@ def quoted_spread_bps(bid: float, ask: float) -> float:
 
 
 def free_cash_flow(operating_cash_flow: float, positive_capex_outflow: float) -> float:
-    """QF-F04: basic unlevered-to-owner FCF proxy; NOT FCFF."""
+    """QF-F04: basic operating FCF proxy; NOT FCFF."""
     capex = finite(positive_capex_outflow, "positive_capex_outflow")
     if capex < 0:
         raise QuantInputError("capex must be a positive cash outflow")
