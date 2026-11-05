@@ -164,6 +164,17 @@ def main() -> None:
         except Exception as exc:
             LOG.exception("Failed analyzing %s", symbol)
             errors.append(f"{symbol}: unavailable ({type(exc).__name__})")
+            # A failed symbol must remain in the requested watchlist report.
+            # Never turn missing data into a zero-score investment opinion.
+            rows.append({
+                "symbol": symbol, "score": None,
+                "signal": "Insufficient evidence", "risk": "Not assessed",
+                "asof": "Unavailable", "stale": True,
+                "strengths": [], "concerns": ["Market data unavailable"],
+                "rules": [], "plan_status": "INSUFFICIENT_EVIDENCE",
+                "plan_reason": "Unable to verify market data and scenario",
+                "scenario": None,
+            })
     fresh = sum(not row["stale"] for row in rows)
     required = math.ceil(len(symbols) * .6)
     if fresh < required:
