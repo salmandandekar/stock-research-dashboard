@@ -12,6 +12,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+from quant_core import daily_volatility, price_return, sma
 
 ROOT = Path(__file__).resolve().parent
 LOG = logging.getLogger("stock-research")
@@ -26,11 +27,11 @@ def analyze_stock(symbol: str, closes: pd.Series, today=None) -> dict:
     if not np.isfinite(series.to_numpy()).all() or (series <= 0).any():
         raise ValueError(f"{symbol}: prices must be positive and finite")
     last = float(series.iloc[-1])
-    sma50 = float(series.tail(50).mean())
-    sma200 = float(series.tail(200).mean())
-    mom3 = last / float(series.iloc[-64]) - 1
-    mom6 = last / float(series.iloc[-127]) - 1
-    volatility = float(series.pct_change().dropna().tail(63).std() * np.sqrt(252))
+    sma50 = sma(series.tail(50).tolist(), 50)
+    sma200 = sma(series.tail(200).tolist(), 200)
+    mom3 = price_return(float(series.iloc[-64]), last)
+    mom6 = price_return(float(series.iloc[-127]), last)
+    volatility = daily_volatility(series.pct_change().dropna().tail(63).tolist())
     if not math.isfinite(volatility):
         raise ValueError(f"{symbol}: volatility invalid")
     checks = [
