@@ -292,3 +292,20 @@ Do not start with a prediction-focused LLM or optimize aggressive return targets
 - Alpaca IEX vs SIP coverage and 15-min recent window: https://docs.alpaca.markets/us/docs/market-data-faq
 - Massive feed and personal/commercial rights: https://massive.com/stocks
 - GitHub Pages restrictions: https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits
+
+
+## 13. Steelman v1.2a normative requirements extension
+
+Read [SHORT_TERM_STEELMAN.md](SHORT_TERM_STEELMAN.md) before implementing any short-term scoring algorithm.
+
+**The strongest investable-design claim is conditional and falsifiable:** temporary price dislocations and information/flow effects might yield **occasional** cost-adjusted opportunities. A profitable historical pattern from academia does not establish our own after-cost edge. The system must explicitly seek falsification against simple baselines and permit zero candidates.
+
+Additional normative requirements **ST-SM-01 through ST-SM-16** and acceptance tests **SM-T01 through SM-T16** apply. In particular:
+- **ST-SM-01 / 06:** Every strategy needs a versioned, preregistered economic mechanism and an experimental search budget.
+- **ST-SM-02 / 03 / 05:** Movement magnitude, executable net expectancy, uncertainty-adjusted evaluation and stress/tail losses are separately disclosed.
+- **ST-SM-04 / 13:** Missing market microstructure data prevents labeling a result as executable; stale/partial IEX and unentitled SIP must never appear as current full-market opportunities.
+- **ST-SM-07 / 08 / 16:** Comparison against no-trade, simple low-frequency strategies and matched controls, with cluster-sensitive uncertainty and preference for simpler methods, is mandatory.
+- **ST-SM-09 / 10 / 12:** No forced alerts. Immutable opportunity ledger and automatic suspension when data, economics or performance deteriorates.
+- **ST-SM-11 / 14 / 15:** The product must demonstrate research value independent of alpha, identify universe coverage, and maintain strict research/advisory/execution boundaries.
+
+**Release precedence:** design gate D0 passed on paper; D1–D4 remain unverified. Requirements cannot be labeled implemented by their inclusion in this PR. No automated trade placement, leverage or "Buy now" outputs are authorized.
