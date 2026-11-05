@@ -36,7 +36,7 @@ def test_formula_id_inventory_is_unique_and_complete():
     all_ids = []
     for filename, (category, count) in MODULES.items():
         text = (ROOT / "docs" / "quant" / filename).read_text("utf-8")
-        found = re.findall(r"(?m)^\\| (QF-" + category + r"\\d{2}) \\|", text)
+        found = [line.split("|")[1].strip() for line in text.splitlines() if line.startswith("| QF-" + category)]
         assert len(found) == count, (filename, len(found), count)
         assert len(set(found)) == count
         all_ids.extend(found)
@@ -48,7 +48,7 @@ def test_golden_vector_specs_have_ids_valid_formula_references_and_finite_number
     formulas = set()
     for filename in MODULES:
         text = (ROOT / "docs" / "quant" / filename).read_text("utf-8")
-        formulas.update(re.findall(r"QF-[MFVTBS]\\d{2}", text))
+        formulas.update(re.findall(r"QF-[MFVTBS][0-9]{2}", text))
     cases = _load_vectors()
     assert len(cases) == 40
     for case in cases:
