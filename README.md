@@ -65,12 +65,22 @@ Open https://chatgpt.com/codex, choose this repository as the Codex environment,
 
 The public report has a Swing Scenario section. It displays each stock's eligibility or exclusion status, and an entirely browser-local calculator for the user's own broker-provided last close, last 20 completed session high, Wilder ATR(14), and dollar turnover. These inputs are not transmitted or stored.
 
-To generate a private CSV of automatically computed exact USD price levels on your own computer, run:
+**Automated, no manual data entry:** The preferred private report uses an authenticated Alpaca historical market-data source. Once an authorized API key is configured and a local task is installed, it fetches all 13 symbols and creates both private_reports/latest.html and private_reports/latest.csv after market close each weekday.
+
+To test with synthetic data (no credentials), run:
 
     python -m pip install -r requirements.txt
-    python private_trade_report.py
+    python private_trade_report.py --demo
 
-The program uses the same unofficial personal-use yfinance adapter and writes private_reports/swing_research_*.csv. The directory is ignored by Git and not deployed. Keep this CSV private and verify provider rights.
+The demonstration writes private_reports/demo_latest.html and demo_latest.csv. These contain synthetic numbers only.
+
+For actual authorized data, run:
+
+    python private_trade_report.py --source alpaca --feed sip
+
+You must provide ALPACA_API_KEY_ID and ALPACA_API_SECRET_KEY through a supported local secure setup. Do NOT put these in GitHub, public Actions logs, or a website. Prefer non-funded paper/data credentials. The output is ignored by Git and never published. The free/Basic market-data feed may have timing and venue restrictions; failed entitlement does not fall back to an inaccurate full-market claim.
+
+Read docs/AUTOMATED_PRIVATE_REPORT.md for exact Windows Task Scheduler (DPAPI credentials) and RHEL/Linux systemd user-timer instructions. Both can run Monday–Friday after market close without manually entering close, high, ATR or volume. Mac scheduling can use a local LaunchAgent, but no installer is bundled here.
 
 Research-only formulas: conditional breakout entry is the smallest cent strictly above the last 20 completed-session highs; stop scenario = entry - 1.5 x ATR14; target 1 = entry + 2R; target 2 = entry + 3R, where R = entry - stop. Skip the entry if the opening price exceeds entry + 0.5 x ATR14. Recompute after each completed bar. Research horizon is 1–5 subsequent exchange trading sessions.
 
