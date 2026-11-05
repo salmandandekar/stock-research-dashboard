@@ -1,0 +1,259 @@
+{
+  "schema": "QFCS-GOLDEN-v1.3",
+  "data": "SYNTHETIC",
+  "verified": "ARITHMETIC_EXAMPLES_ONLY_NOT_EXECUTED_TESTS",
+  "abs_tol": 1e-9,
+  "cases": [
+    {
+      "id": "G21",
+      "formula": "QF-F01",
+      "input": {
+        "annual": 140,
+        "nine_month_ytd": 90
+      },
+      "expected": {
+        "q4": 50
+      }
+    },
+    {
+      "id": "G22",
+      "formula": "QF-F12",
+      "input": {
+        "shares_prior": 50,
+        "shares_now": 100,
+        "split_2_for_1": true
+      },
+      "expected": {
+        "split_neutral_dilution": 0
+      }
+    },
+    {
+      "id": "G23",
+      "formula": "QF-S04",
+      "input": {
+        "p": [
+          0.8,
+          0.2
+        ],
+        "y": [
+          1,
+          0
+        ]
+      },
+      "expected": {
+        "brier": 0.04
+      }
+    },
+    {
+      "id": "G24",
+      "formula": "QF-M02",
+      "input": {
+        "source_type": "DIVIDEND_ADJUSTED_TOTAL_RETURN",
+        "cash_dividend_added_again": 1
+      },
+      "expected": {
+        "status": "DOUBLE_COUNT_BLOCKED"
+      }
+    },
+    {
+      "id": "G25",
+      "formula": "QF-S07",
+      "input": {
+        "available_at": "2026-11-05T10:00Z",
+        "signal_at": "2026-11-04T20:00Z"
+      },
+      "expected": {
+        "status": "LOOKAHEAD_BLOCKED"
+      }
+    },
+    {
+      "id": "G26",
+      "formula": "QF-T15",
+      "input": {
+        "signal_at": "2026-11-04T15:30Z",
+        "expiry": "2026-11-04T15:40Z",
+        "published_at": "2026-11-04T16:00Z"
+      },
+      "expected": {
+        "status": "EXPIRED"
+      }
+    },
+    {
+      "id": "G27",
+      "formula": "QF-F08",
+      "input": {
+        "borrowings": 600,
+        "leases": 100,
+        "excess_cash": 150
+      },
+      "expected": {
+        "net_debt": 550
+      }
+    },
+    {
+      "id": "G28",
+      "formula": "QF-V06",
+      "input": {
+        "ev": 1610.38961038961,
+        "excess_cash": 50,
+        "debt": 300,
+        "shares_millions": 50
+      },
+      "expected": {
+        "equity": 1360.38961038961,
+        "per_share": 27.2077922077922
+      }
+    },
+    {
+      "id": "G29",
+      "formula": "QF-S06",
+      "input": {
+        "gross_expectancy": 0.003,
+        "base_cost": 0.002
+      },
+      "expected": {
+        "net_base": 0.001,
+        "net_at_2x": -0.001,
+        "status_2x": "FRAGILE_NO_PROMOTION"
+      }
+    },
+    {
+      "id": "G30",
+      "formula": "QF-B01",
+      "input": {
+        "nav_begin": 100,
+        "nav_end": 150,
+        "end_external_flow": 50
+      },
+      "expected": {
+        "time_weighted_subperiod_return": 0
+      }
+    },
+    {
+      "id": "G31",
+      "formula": "QF-B01",
+      "input": {
+        "nav_begin": 100,
+        "nav_end": 150,
+        "intraperiod_deposit": 50
+      },
+      "expected": {
+        "status": "SUBPERIOD_VALUATION_REQUIRED"
+      }
+    },
+    {
+      "id": "G32",
+      "formula": "QF-F17",
+      "input": {
+        "weights": [
+          0.35,
+          0.25,
+          0.2,
+          0.25
+        ]
+      },
+      "expected": {
+        "status": "WEIGHTS_NOT_NORMALIZED"
+      }
+    },
+    {
+      "id": "G33",
+      "formula": "QF-B07",
+      "input": {
+        "returns": [
+          0.01,
+          -0.01,
+          0.005
+        ]
+      },
+      "expected": {
+        "status": "INSUFFICIENT_TAIL_SAMPLE"
+      }
+    },
+    {
+      "id": "G34",
+      "formula": "QF-S02",
+      "input": {
+        "same_event_signals": 50,
+        "unique_clusters": 1
+      },
+      "expected": {
+        "status": "INDEPENDENCE_REJECTED"
+      }
+    },
+    {
+      "id": "G35",
+      "formula": "QF-M15",
+      "input": {
+        "fraction": 0.001
+      },
+      "expected": {
+        "basis_points": 10
+      }
+    },
+    {
+      "id": "G36",
+      "formula": "QF-V10",
+      "input": {
+        "target": 1000000,
+        "model_max": 200,
+        "model_min": 100
+      },
+      "expected": {
+        "status": "NO_ROOT"
+      }
+    },
+    {
+      "id": "G37",
+      "formula": "QF-M06",
+      "input": {
+        "window": 5,
+        "prices": [
+          1,
+          2,
+          3
+        ]
+      },
+      "expected": {
+        "status": "INSUFFICIENT_HISTORY"
+      }
+    },
+    {
+      "id": "G38",
+      "formula": "QF-M18",
+      "input": {
+        "yield_type": "US_TBILL_BANK_DISCOUNT",
+        "discount_rate": 0.045,
+        "term_days": 90
+      },
+      "expected": {
+        "status": "CONVERSION_REQUIRED"
+      }
+    },
+    {
+      "id": "G39",
+      "formula": "QF-B08",
+      "input": {
+        "winning_pnl": [
+          1,
+          2
+        ],
+        "losing_pnl": []
+      },
+      "expected": {
+        "status": "PROFIT_FACTOR_UNDEFINED"
+      }
+    },
+    {
+      "id": "G40",
+      "formula": "QF-M15",
+      "input": {
+        "bid": 100,
+        "ask": 100
+      },
+      "expected": {
+        "spread_bps": 0
+      }
+    }
+  ]
+}
