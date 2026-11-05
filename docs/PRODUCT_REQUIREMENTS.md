@@ -271,3 +271,22 @@ See [STEELMAN_REVIEW.md](STEELMAN_REVIEW.md) for the strongest build justificati
 **Later:** delayed historical intraday research, prospective paper alerting and a separately approved licensed live signal runtime.
 
 All earlier gates G0–G6 remain mandatory. **D0 passed at design level only; no trading-signal implementation, alpha or paper-validation claim is authorized.**
+
+
+## 13. Mathematical and Financial Calculation Standard — v1.3
+
+**Normative cross-reference:** [quant/01_MARKET_MATH.md](quant/01_MARKET_MATH.md), [quant/02_FUNDAMENTALS.md](quant/02_FUNDAMENTALS.md), [quant/03_VALUATION.md](quant/03_VALUATION.md), [quant/04_EXECUTION_COSTS.md](quant/04_EXECUTION_COSTS.md), [quant/05_PORTFOLIO_RISK.md](quant/05_PORTFOLIO_RISK.md), [quant/06_STATISTICAL_VALIDATION.md](quant/06_STATISTICAL_VALIDATION.md), and [quant/07_RED_TEAM_STEELMAN.md](quant/07_RED_TEAM_STEELMAN.md).
+
+**Binding requirement QF-R01:** A value or model confidence may not be labeled valid or published without a formula ID, version, source and license, measurement units, exact input available-at and period-end dates, missing/zero handling, independent test fixture, and code SHA. Calculations MUST fail closed for invalid or insufficient data.
+
+**QF-R02:** All company valuation, technical, trading-cost, portfolio-risk and statistical outputs MUST use the explicit equations and guards in the v1.3 modules, with traceable links to existing FR, ST and ST-SM requirements. Scoring must not be presented as a calibrated win probability.
+
+**QF-R03:** Any execution simulation must avoid double dividend/spread/cost, hindsight bar fills, profit at nonexecutable prices, current-survivor-only stock universes and future revisions of SEC filings.
+
+**QF-R04:** Every implemented formula MUST have independently computed golden vector tests, property/invariant checks, adverse cases and proof of data timestamp/source license correctness. The 40 synthetic example vectors in tests/specs are a **partial** test specification, not evidence of implementation or full formula coverage.
+
+**QF-R05:** Claims of superior after-cost return require predeclared market and capital assumptions, independent point-in-time walk-forward holdout, baseline counterfactuals, tail risk and selection-bias correction, and prospective paper tracking. No numeric performance target or formula guarantees profitable investing.
+
+**QF-R06:** P0 release blockers include unavailable market rights, lookahead, untrusted accounting units, double counting, impossible fill, arbitrary rank-based win-probability, unstable valuation, and material CI test failures. Review only -> engineering acceptance -> quantitative validation -> possible paper research progression.
+
+The red-team document catalogs QA-01..QA-50. Those scenarios are NOT software tests until independently implemented and executed. All approved v1.0–v1.2 source governance, no-execution and risk gates remain in effect.
